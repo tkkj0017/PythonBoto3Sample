@@ -48,6 +48,36 @@ def s3_handler_pub_sample(event, context):
         raise e
 
 
+# Response Error
+def response_error(key):
+    response = s3.delete_objects(
+        Bucket="my-bucket",
+        Delete={"Objects": [{"key": key}]}
+    )
+
+    # エラーの確認
+    if len(response["Errors"]) > 0:
+        for err in response["Errors"]:
+            # エラー情報を標準エラー出力に出す
+            print(err, file=sys.stderr)
+
+
+# Exception Error
+# 例外を調べる→https://docs.aws.amazon.com/AmazonS3/latest/API/ErrorResponses.html
+def exception_error():
+    try:
+        response = s3.create_bucket(Bucket="test")
+    # Boto3で定義されている例外のキャッチ
+    except s3.exceptions.BucketAlreadyExists as e:
+        print(e)
+    # AWS REST APIドキュメントで定義された例外のキャッチ
+    except ClientError as e:
+        if e.response['Error']['Code'] == 'AccessDenied':
+            print(e)
+        else:
+            raise e
+
+
 # テーブル内のIDを指定してデータを該当するitemを取得する
 def dynamodb_handler(event, context):
     table_name = "DynamoForLambda"
@@ -94,32 +124,5 @@ def session():
     s3 = session.client("s3")
 
 
-# Response Error
-def response_error(key):
-    response = s3.delete_objects(
-        Bucket="my-bucket",
-        Delete={"Objects": [{"key": key}]}
-    )
 
-    # エラーの確認
-    if len(response["Errors"]) > 0:
-        for err in response["Errors"]:
-            # エラー情報を標準エラー出力に出す
-            print(err, file=sys.stderr)
-
-
-# Exception Error
-# 例外を調べる→https://docs.aws.amazon.com/AmazonS3/latest/API/ErrorResponses.html
-def exception_error():
-    try:
-        response = s3.create_bucket(Bucket="test")
-    # Boto3で定義されている例外のキャッチ
-    except s3.exceptions.BucketAlreadyExists as e:
-        print(e)
-    # AWS REST APIドキュメントで定義された例外のキャッチ
-    except ClientError as e:
-        if e.response['Error']['Code'] == 'AccessDenied':
-            print(e)
-        else:
-            raise e
 
