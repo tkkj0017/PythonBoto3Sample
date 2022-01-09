@@ -9,8 +9,13 @@ import pprint
 import boto3
 import sys
 from botocore.exceptions import ClientError
+from boto3.dynamodb.conditions import Key, Attr
 
+# S3と接続
 s3 = boto3.client('s3')
+# DynamoDBと接続
+dynamodb = boto3.resource('dynamodb')
+# Rekognitionと接続
 rekognition = boto3.client('rekognition')
 
 
@@ -23,6 +28,17 @@ def s3_list_objects():
     for r in response["Contents"]:
         k = r["Key"]
         print(k)
+
+
+# テーブル内のIDを指定してデータを該当するitemを取得する
+def dynamodb_handler(event, context):
+    table_name = "DynamoForLambda"
+    partition_key = {"id": event["id"]}
+    dynamotable = dynamodb.Table(table_name)
+    res = dynamotable.get_item(Key=partition_key)
+    item = res["Item"]
+
+    return item
 
 
 # Paginator
