@@ -66,13 +66,20 @@ def delete_folder():
 
 
 # S3にファイルをアップロード
-def put_object(bucket, path, data):
-    response = s3.put_object(
+def s3_put(bucket, path, data, content_type):
+    s3 = boto3.client('s3')
+    try:
+        response = s3.put_object(
             Body=data,
             Bucket=bucket,
-            Key=path)
-    pprint.pprint(response)
-
+            Key=path,
+            ContentType=content_type
+            )
+        pprint.pprint(response)
+        return True
+    except Exception as e:
+        print(e)
+        raise
 
 
 # Lambda関数ハンドラー
