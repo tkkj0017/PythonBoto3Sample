@@ -26,18 +26,57 @@ def get_file_detail(bucket_name = '', path = ''):
     pprint.pprint(json.loads(response.read().decode('utf-8')))
 
     # Client API
-    # response = CLIENT.get_object(
-    #     Bucket = BUCKET_NAME,
-    #     Key = OBJECT_KEY
-    # )
-    # body = response['Body'].read()
-    # # json.dumps(response)
-    # pprint.pprint(response)
+    response = CLIENT.get_object(
+        Bucket = BUCKET_NAME,
+        Key = OBJECT_KEY
+    )
+    body = response['Body'].read()
+    # json.dumps(response)
+    pprint.pprint(response)
 
 
 # 特定のフォルダのファイル一覧を返す
+# TODO
 def get_file_list_by_folder_name():
     return
 
+
+# バケット内のファイル、フォルダを全て取得する
+# TODO
+def get_file_list_on_bucket():
+    return
+
+
+# 一つのリージョン内にあるバケット一覧を取得する
+# TODO
+def get_bucket_all_on_region():
+    return
+
+
+# ファイルを消去
+# TODO
+def delete_file():
+    return
+
+
+# フォルダを消去
+# TODO
+def delete_folder():
+    return
+
+
+# S3にファイルをアップロード
+def put_object(bucket, path, data):
+    response = s3.put_object(
+            Body=data,
+            Bucket=bucket,
+            Key=path)
+    pprint.pprint(response)
+
+
+
+# Lambda関数ハンドラー
+def lambda_handler(event, context):
+    return
 
 get_file_detail()
