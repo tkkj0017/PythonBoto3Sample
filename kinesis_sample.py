@@ -3,7 +3,7 @@ import boto3
 
 def get_data_all_shards():
     kinesis = boto3.client('kinesis')
-    stream_name = "myKinesis"
+    stream_name = "%stream_name%"
     limit = 100
 
     shards = kinesis.list_shards(
@@ -32,12 +32,6 @@ def get_record_by_shard_id():
     iterator = kinesis.get_shard_iterator(
         StreamName=stream_name,
         ShardId=shard_id,
-        ShardIteratorType='LATEST'
-    )
-    pprint.pprint(iterator)
-    iterator = kinesis.get_shard_iterator(
-        StreamName=stream_name,
-        ShardId=shard_id,
         ShardIteratorType='TRIM_HORIZON'
     )
     # pprint.pprint(iterator)
@@ -49,8 +43,8 @@ def get_record_by_shard_id():
 
 def put_data():
     kinesis = boto3.client('kinesis')
-    stream_name = "myKinesis"
-    data = 'takeyatakeyatakeya'
+    stream_name = "%stream_name%"
+    data = 'data'
     partition_key = '2'
 
     response = kinesis.put_records(
